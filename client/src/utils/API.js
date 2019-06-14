@@ -1,9 +1,11 @@
 import axios from "axios";
 
 export default {
+  // getDogsOfBreed: function(breed) {
+  //   return axios.get("https://dog.ceo/api/breed/" + breed + "/images");
   // Gets all books
-  getBooks: function() {
-    return axios.get("/api/books");
+  searchBooks: function(query) {
+    return axios.get("https://www.googleapis.com/books/v1/volumes?q=" + query + "&key=AIzaSyC5A4siDJJdOafw2RgotVXbXGUHBq_K-mo");
   },
   // Gets the book with the given id
   getBook: function(id) {

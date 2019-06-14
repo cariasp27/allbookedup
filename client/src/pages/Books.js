@@ -1,64 +1,45 @@
 import React, { Component } from "react";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
-import DeleteBtn from "../components/DeleteBtn";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
-import {Input, SubmitBtn} from "../components/Form";
+import SearchForm from "../components/Form";
 
   class Books extends Component {
     // Setting our component's initial state
     state = {
+      search: "",
       books: [],
-      title: "",
-      author: "",
-      synopsis: ""
     };
-  
-    // When the component mounts, load all books and save them to this.state.books
-    componentDidMount() {
-      this.loadBooks();
-    }
-  
-    // Loads all books  and sets them to this.state.books
-    loadBooks = () => {
-      API.getBooks()
-        .then(res =>
-          this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-        )
-        .catch(err => console.log(err));
-    };
-  
-    // Deletes a book from the database with a given id, then reloads books from the db
-    deleteBook = id => {
-      API.deleteBook(id)
-        .then(res => this.loadBooks())
-        .catch(err => console.log(err));
-    };
-  
     // Handles updating component state when the user types into the input field
     handleInputChange = event => {
-      const { name, value } = event.target;
-      this.setState({
-        [name]: value
-      });
+      this.setState({ search: event.target.value });
     };
 
-    getOnebook
-  
     // When the form is submitted, use the API.saveBook method to save the book data
     // Then reload books from the database
     handleFormSubmit = event => {
       event.preventDefault();
-      if (this.state.title && this.state.author) {
-        API.saveBook({
-          title: this.state.title,
-          author: this.state.author,
-          synopsis: this.state.synopsis
-        })
-          .then(res => this.loadBooks())
-          .catch(err => console.log(err));
+        API.searchBooks(this.state.search)
+          .then(res => {
+      let response = res.data.items;
+      let searchedbooks = [];
+      console.log(response)
+      for (let i=0; i < response.length; i++) {
+        let book = {};
+        let info = response[i].volumeInfo;
+        book.title = info.title;
+        book.authors = info.authors;
+        book.desc = info.description;
+        book.img = info.imageLinks.thumbnail;
+        book.link = response[i].selfLink;
+        searchedbooks.push(book)
       }
+      this.setState({books: searchedbooks})
+      console.log(this.state.books)
+        })
+          .catch(err => console.log(err));
+      
     };
   
     render() {
@@ -67,20 +48,22 @@ import {Input, SubmitBtn} from "../components/Form";
           <Row>
             <Col size="md-12 sm-12">
               <Jumbotron>
-                <h1>Books On My List</h1>
-                <Input></Input><SubmitBtn>Search</SubmitBtn>
+                <h1>Google Book Search</h1>
+                <SearchForm             
+                handleFormSubmit={this.handleFormSubmit}
+                handleInputChange={this.handleInputChange}
+                />
               </Jumbotron>
               {this.state.books.length ? (
                 <List>
                   {this.state.books.map(book => {
                     return (
                       <ListItem key={book._id}>
-                        <a onClick={() => this.getBook(book._id)}>
+                        <p>
                           <strong>
                             {book.title} by {book.author}
                           </strong>
-                        </a>
-                        <DeleteBtn onClick={() => this.deleteBook(book._id)} />
+                        </p>
                       </ListItem>
                     );
                   })}
