@@ -24,15 +24,16 @@ import SearchForm from "../components/Form";
           .then(res => {
       let response = res.data.items;
       let searchedbooks = [];
-      console.log(response)
       for (let i=0; i < response.length; i++) {
+        console.log(response);
         let book = {};
         let info = response[i].volumeInfo;
+        book._id = response[i].id;
         book.title = info.title;
         book.authors = info.authors;
         book.desc = info.description;
         book.img = info.imageLinks.thumbnail;
-        book.link = response[i].selfLink;
+        book.link = info.infoLink;
         searchedbooks.push(book)
       }
       this.setState({books: searchedbooks})
@@ -59,11 +60,12 @@ import SearchForm from "../components/Form";
                   {this.state.books.map(book => {
                     return (
                       <ListItem key={book._id}>
-                        <p>
+                        <img src={book.img} alt={book.title}></img>
+                        <a href={book.link}>
                           <strong>
-                            {book.title} by {book.author}
+                            {book.title} by {book.authors}
                           </strong>
-                        </p>
+                        </a>
                       </ListItem>
                     );
                   })}
