@@ -17,33 +17,35 @@ import { List, ListItem } from "../components/List";
         API.getBooks()
         .then(res => this.setState({books: res.data})
             )
-            .catch(err => console.log(err))
+            .catch(err => console.log(err));
     }
+    
     render() {
       return (
         <Container fluid>
           <Row>
             <Col size="md-12 sm-12">
               <Jumbotron>
-                <h1>Saved Books</h1>
+                <h1>Saved books</h1>
               </Jumbotron>
               {this.state.books.length ? (
                 <List>
                   {this.state.books.map(book => {
                     return (
                       <ListItem key={book._id}>
-                        <img src={book.img} alt={book.title}></img>
+                        <img src={book.img} alt={book.title} ></img>
                         <a href={book.link}>
                           <strong>
                             {book.title} by {book.authors}
                           </strong>
                         </a>
+                        <p>{book.desc}</p>
                       </ListItem>
                     );
                   })}
                 </List>
               ) : (
-                <h3>No Saved Books</h3>
+                <h3>No Results to Display</h3>
               )}
             </Col>
           </Row>

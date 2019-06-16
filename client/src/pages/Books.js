@@ -4,6 +4,8 @@ import API from "../utils/API";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import SearchForm from "../components/Form";
+import SaveBtn from "../components/SaveBtn";
+import "./style.css"
 
   class Books extends Component {
     // Setting our component's initial state
@@ -15,9 +17,24 @@ import SearchForm from "../components/Form";
     handleInputChange = event => {
       this.setState({ search: event.target.value });
     };
+    
+    savebook = (book) => {
+      console.log(book.title);
+      console.log(book.authors);
+      console.log(book.desc);
+      console.log(book.img);
+      console.log(book.link);
+      API.saveBook({
+        title: book.title,
+        authors: book.authors,
+        description: book.desc,
+        img: book.img,
+        link: book.link
+      })
+        .then(res => console.log("Book Saved"))
+        .catch(err => console.log(err));
+    };
 
-    // When the form is submitted, use the API.saveBook method to save the book data
-    // Then reload books from the database
     handleFormSubmit = event => {
       event.preventDefault();
         API.searchBooks(this.state.search)
@@ -25,7 +42,6 @@ import SearchForm from "../components/Form";
       let response = res.data.items;
       let searchedbooks = [];
       for (let i=0; i < response.length; i++) {
-        console.log(response);
         let book = {};
         let info = response[i].volumeInfo;
         book._id = response[i].id;
@@ -60,12 +76,14 @@ import SearchForm from "../components/Form";
                   {this.state.books.map(book => {
                     return (
                       <ListItem key={book._id}>
-                        <img src={book.img} alt={book.title}></img>
+                        <img src={book.img} alt={book.title} ></img>
                         <a href={book.link}>
                           <strong>
                             {book.title} by {book.authors}
                           </strong>
                         </a>
+                        <p>{book.desc}</p>
+                        <SaveBtn onClick={() => this.savebook(book)} />
                       </ListItem>
                     );
                   })}

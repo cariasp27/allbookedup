@@ -4,9 +4,7 @@
   border-radius: 4px;
   overflow-y: scroll;
   overflow-x: hidden;
-}
-.list-group-item {
-
+  margin: auto;
 }
 .list-overflow-container ul {
   text-align: center;
@@ -15,7 +13,7 @@
 
 
 .list-overflow-container li {
-  height: 200px;
+  height: auto;
   border-radius: 0px;
   border-left: none;
   border-right: none;
