@@ -39,7 +39,7 @@ import { List, ListItem } from "../components/List";
                             {book.title} by {book.authors}
                           </strong>
                         </a>
-                        <p>{book.desc}</p>
+                        <p>{book.description}</p>
                       </ListItem>
                     );
                   })}
